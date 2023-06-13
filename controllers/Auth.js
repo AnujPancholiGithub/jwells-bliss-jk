@@ -1,8 +1,9 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User.model");
 const { generateJwtToken } = require("../helpers/JWT.Verify");
+const asyncHandler = require("express-async-handler");
 
-const registerUser = async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
   try {
     const { name, mobile, email, password, role } = req.body;
 
@@ -55,7 +56,7 @@ const registerUser = async (req, res) => {
       message: "something went wrong with account creation",
     });
   }
-};
+});
 
 const logInUser = async (req, res) => {
   try {

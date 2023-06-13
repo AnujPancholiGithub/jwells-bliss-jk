@@ -4,6 +4,8 @@ const express = require("express");
 const mongoConnect = require("./helpers/db");
 const authRouter = require("./routes/Auth.routes");
 const userDetailsRouter = require("./routes/UserDetails.routes");
+const errorHandler = require("./middlewares/errorHandler");
+const productRouter = require("./routes/Products.routes");
 
 //Connecting MongoDB
 mongoConnect();
@@ -17,6 +19,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/user-details", userDetailsRouter);
+app.use("/api/products", productRouter);
+//error handler --
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
