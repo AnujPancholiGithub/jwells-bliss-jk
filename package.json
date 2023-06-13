@@ -1,0 +1,31 @@
+{
+  "name": "server-jwell-bliss",
+  "version": "0.0.1",
+  "description": "Server for jwellery webApp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "JK",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.2.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.1.4"
+  }
+}
