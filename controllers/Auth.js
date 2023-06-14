@@ -2,23 +2,24 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User.model");
 const { generateJwtToken } = require("../helpers/JWT.Verify");
 const asyncHandler = require("express-async-handler");
+const Joi = require("joi");
+
+const registerUserSchema = Joi.object({
+  name: Joi.string().required(),
+  mobile: Joi.number().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  role: Joi.string().required(),
+});
 
 const registerUser = asyncHandler(async (req, res) => {
   try {
-    const { name, mobile, email, password, role } = req.body;
+    const { error } = registerUserSchema.validate(req.body);
 
-    if (!name || !email || !password || !mobile || !role) {
-      return res.status(401).json({
-        message:
-          "We kindly request that you provide us with all the required details",
-        name,
-        mobile,
-        email,
-        password,
-        role,
-      });
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
     }
-
+    const { name, mobile, email, password, role } = req.body;
     const userExist = await User.findOne({ mobile });
     const emailExist = await User.findOne({ email });
 
@@ -58,18 +59,35 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+const loginSchema = Joi.object({
+  mobile: Joi.number().required(),
+  password: Joi.string().required(),
+});
+
 const logInUser = async (req, res) => {
   try {
+    const { error } = loginSchema.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
     const { mobile, password } = req.body;
 
     const user = await User.findOne({ mobile });
+
     if (!user) {
-      return res.status(401).json({ message: "Invalid mobile or password" });
+      return res
+        .status(401)
+        .json({ message: "Invalid mobile or password or not a user" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid mobile or password" });
+      return res
+        .status(401)
+        .json({ message: "Invalid mobile or password or not a user" });
     }
 
     const token = generateJwtToken({
@@ -78,7 +96,8 @@ const logInUser = async (req, res) => {
       email: user.email,
       _id: user.id,
     });
-    res.status(200).json({ message: "Login SuccesFul", token });
+
+    res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An error occurred" });

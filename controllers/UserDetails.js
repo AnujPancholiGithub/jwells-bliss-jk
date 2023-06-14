@@ -1,8 +1,39 @@
 const User = require("../models/User.model");
 const UserDetails = require("../models/UserDetails.model");
+const Joi = require("joi");
+
+const userDetailsSchema = Joi.object({
+  brandName: Joi.string().allow(""),
+  address: Joi.string().allow(""),
+  pincode: Joi.number().allow(""),
+  city: Joi.string().allow(""),
+  state: Joi.string().allow(""),
+  locality: Joi.string().allow(""),
+  gstNo: Joi.string().allow(""),
+  storePersonName: Joi.string().allow(""),
+  contactNo: Joi.array().items(Joi.number().integer().min(0).max(9)).length(10),
+  gpsLocation: Joi.object({
+    latitude: Joi.number(),
+    longitude: Joi.number(),
+  }).default({}),
+});
+
+const validateUserDetails = (data) => {
+  const { error, value } = userDetailsSchema.validate(data);
+  if (error) {
+    throw new Error(error.details[0].message);
+  }
+  return value;
+};
 
 const addUserDetails = async (req, res) => {
   try {
+    const { error } = userDetailsSchema.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
     const user = req.user;
 
     const {
@@ -68,7 +99,11 @@ const addUserDetails = async (req, res) => {
 const updateUserDetails = async (req, res) => {
   try {
     const user = req.user;
+    const { error } = userDetailsSchema.validate(req.body);
 
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
     const {
       brandName,
       address,
