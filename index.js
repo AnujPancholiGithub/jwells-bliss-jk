@@ -1,5 +1,7 @@
-const dotenv = require("dotenv");
-dotenv.config();
+if (process.env.NODE_ENV === "dev") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
 const express = require("express");
 const mongoConnect = require("./helpers/db");
 const authRouter = require("./routes/Auth.routes");
