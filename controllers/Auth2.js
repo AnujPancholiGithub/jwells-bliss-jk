@@ -3,6 +3,27 @@ const User = require("../models/User.model");
 const { generateJwtToken } = require("../helpers/JWT.Verify");
 const asyncHandler = require("express-async-handler");
 const Joi = require("joi");
+const serviceAccount = require("./../helpers/firbaseKey.json");
+const sgMail = require("@sendgrid/mail");
+const {
+  emailMessageGenerator,
+} = require("../helpers/Email/EmailMessageGenrator");
+sgMail.setApiKey(
+  "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"
+);
+
+function generateOTP(length) {
+  const digits = "0123456789";
+  let OTP = "";
+
+  for (let i = 0; i < length; i++) {
+    OTP += digits[Math.floor(Math.random() * 10)];
+  }
+
+  return OTP;
+}
+
+const otp = generateOTP(6); // Generate a 6-digit OTP
 
 const registerUserSchema = Joi.object({
   name: Joi.string().required(),
@@ -19,15 +40,16 @@ const registerUser = asyncHandler(async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
+
     const { name, mobile, email, password, role } = req.body;
     const userExist = await User.findOne({ mobile });
     const emailExist = await User.findOne({ email });
 
-    if (userExist || emailExist) {
-      return res.status(409).json({
-        message: "déjà vu? Looks like you've already an account with us.",
-      });
-    }
+    // if (userExist || emailExist) {
+    //   return res.status(409).json({
+    //     message: "déjà vu? Looks like you've already an account with us.",
+    //   });
+    // }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -38,6 +60,17 @@ const registerUser = asyncHandler(async (req, res) => {
       password: hashedPassword,
       role,
     });
+
+    const msg2 = emailMessageGenerator(email);
+
+    function sendOTPEmail(email, otp) {
+      sgMail
+        .send(msg2)
+        .then(() => console.log("OTP email sent"))
+        .catch((error) => console.error("Error sending OTP email:", error));
+    }
+
+    sendOTPEmail("user@example.com", otp); // Send OTP to the user's email address
 
     const payload = {
       name: newUser.name,
@@ -97,7 +130,7 @@ const logInUser = async (req, res) => {
       _id: user.id,
     });
 
-    res.status(200).json({ message: "Login G", token });
+    res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An error occurred" });

@@ -1,13 +1,15 @@
-if (process.env.NODE_ENV === "dev") {
-  const dotenv = require("dotenv");
-  dotenv.config();
-}
+// if (process.env.NODE_ENV === "dev") {
+// const dotenv = require("dotenv");
+// dotenv.config();
+// }
+console.log(process.env.NODE_ENV);
 const express = require("express");
 const mongoConnect = require("./helpers/db");
 const authRouter = require("./routes/Auth.routes");
 const userDetailsRouter = require("./routes/UserDetails.routes");
 const errorHandler = require("./middlewares/errorHandler");
 const productRouter = require("./routes/Products.routes");
+const errorReqRouter = require("./middlewares/errorRouteHandler");
 
 //Connecting MongoDB
 mongoConnect();
@@ -23,7 +25,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user-details", userDetailsRouter);
 app.use("/api/products", productRouter);
 //error handler -----
-app.use(errorHandler);
+app.use("/", errorReqRouter);
 
 const PORT = process.env.PORT;
 
