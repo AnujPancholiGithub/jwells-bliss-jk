@@ -5,7 +5,8 @@ const router = express.Router();
 router
   .route("/*")
   .get((req, res) => {
-    return res.send("We Don't Have Anything on this URL");
+    let param = 
+    return res.send("We Don't Have Anything on this URL" + req.params.filepath);
   })
   .post((req, res) => {
     return res.send("Post Url Not Found");
