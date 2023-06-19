@@ -22,9 +22,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // parse application/json
 app.use(bodyParser.json());
 app.use(cors());
-
+const count = 0;
 app.get("/", (req, res) => {
-  res.send("Ram ram ji first request on this web app");
+  res.send(`C R : ${count++}`);
 });
 
 app.use("/api/auth", authRouter);
