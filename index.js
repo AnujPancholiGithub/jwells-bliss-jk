@@ -16,15 +16,16 @@ const errorReqRouter = require("./middlewares/errorRouteHandler");
 mongoConnect();
 const app = express();
 // parse REQ data
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
-// parse application/json
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+
+//cors
 app.use(cors());
+
 const count = 0;
 app.get("/", (req, res) => {
-  res.send(`C R : ${count++}`);
+  res.send(`Welcome To Jwell Bliss ${count++}`);
 });
 
 app.use("/api/auth", authRouter);
