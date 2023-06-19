@@ -3,6 +3,7 @@
 // dotenv.config();
 // }
 console.log(process.env.NODE_ENV);
+const cors = require("cors");
 const express = require("express");
 const mongoConnect = require("./helpers/db");
 const authRouter = require("./routes/Auth.routes");
@@ -15,10 +16,15 @@ const errorReqRouter = require("./middlewares/errorRouteHandler");
 mongoConnect();
 const app = express();
 // parse REQ data
-app.use(express.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 
+// parse application/json
+app.use(bodyParser.json());
+app.use(cors());
+const count = 0;
 app.get("/", (req, res) => {
-  res.send("Ram ram ji first request on this web app");
+  res.send(`C R : ${count++}`);
 });
 
 app.use("/api/auth", authRouter);
