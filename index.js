@@ -23,16 +23,44 @@ app.use(express.urlencoded({ extended: true }));
 //cors
 app.use(cors());
 
-const count = 0;
+let count = 0;
 app.get("/", (req, res) => {
   res.send(`Welcome To Jwell Bliss ${count++}`);
 });
 
-app.use("/api/auth", authRouter);
-app.use("/api/user-details", userDetailsRouter);
-app.use("/api/products", productRouter);
+app.use(
+  "/api/auth",
+  (res, req, next) => {
+    count++;
+    next();
+  },
+  authRouter
+);
+app.use(
+  "/api/user-details",
+  (res, req, next) => {
+    count++;
+    next();
+  },
+  userDetailsRouter
+);
+app.use(
+  "/api/products",
+  (res, req, next) => {
+    count++;
+    next();
+  },
+  productRouter
+);
 //error handler -----
-app.use("/", errorReqRouter);
+app.use(
+  "/",
+  (res, req, next) => {
+    count++;
+    next();
+  },
+  errorReqRouter
+);
 
 const PORT = process.env.PORT;
 
