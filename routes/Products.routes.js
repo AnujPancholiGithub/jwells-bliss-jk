@@ -6,6 +6,10 @@ const router = express.Router();
 // Fetch all products
 router.get("/", productController.getAllProducts);
 
+//Fetch one product by Id
+
+router.get("/:productId", productController.getProductById);
+
 // Add a product (accessible to Dealer and Admin)
 router.post(
   "/",

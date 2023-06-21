@@ -9,6 +9,24 @@ const getAllProducts = async (req, res) => {
   }
 };
 
+const getProductById = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    console.log("productId", req);
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ error: "Product not found", pid: productId });
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
 const addProduct = async (req, res) => {
   try {
     const {
@@ -81,9 +99,10 @@ const editProduct = async (req, res) => {
     product.description = description || product.description;
     product.price = price || product.price;
     await product.save();
-
+    console.log("product", product);
     res.json({ message: "Product updated successfully", product });
   } catch (error) {
+    console.log("product", product);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -128,6 +147,7 @@ const applyDiscount = async (req, res) => {
 
 module.exports = {
   getAllProducts,
+  getProductById,
   addProduct,
   editProduct,
   applyDiscount,

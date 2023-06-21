@@ -89,15 +89,16 @@ const logInUser = async (req, res) => {
         .status(401)
         .json({ message: "Invalid mobile or password or not a user" });
     }
-
-    const token = generateJwtToken({
+    const payload = {
       name: user.name,
       mobile: user.mobile,
       email: user.email,
       _id: user.id,
-    });
+    };
 
-    res.status(200).json({ message: "Login G", token });
+    const token = generateJwtToken(payload);
+
+    res.status(200).json({ message: "Login G", token, User: payload });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An error occurred" });
