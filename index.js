@@ -11,6 +11,9 @@ const userDetailsRouter = require("./routes/UserDetails.routes");
 const errorHandler = require("./middlewares/errorHandler");
 const productRouter = require("./routes/Products.routes");
 const errorReqRouter = require("./middlewares/errorRouteHandler");
+const cartRouter = require("./routes/Cart.routes");
+const orderRoutes = require("./routes/Order.routes");
+const adminRouter = require("./routes/AdminOrders.routes");
 
 //Connecting MongoDB
 mongoConnect();
@@ -52,6 +55,13 @@ app.use(
   },
   productRouter
 );
+
+app.use("/api/carts", cartRouter);
+
+app.use("/api/checkouts", orderRoutes);
+
+app.use("/api/admin", adminRouter);
+
 //error handler -----
 app.use(
   "/",

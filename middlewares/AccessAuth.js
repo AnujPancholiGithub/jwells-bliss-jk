@@ -16,6 +16,10 @@ const accessAuth = async (req, res, next) => {
         console.log("user in Authorization", user);
         req.user = user;
         next();
+      } else {
+        return res
+          .status(401)
+          .send("Authorization Not Procces Because Of Bad Token");
       }
     } catch (error) {
       console.log("error: ", error);
