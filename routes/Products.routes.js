@@ -14,14 +14,14 @@ router.get("/:productId", productController.getProductById);
 router.post(
   "/",
   accessAuth,
-  authorizeUser(["Dealer", "Admin"]),
+  authorizeUser(["Admin"]),
   productController.addProduct
 );
 // Add multiple products (accessible to Dealer and Admin)
 router.post(
   "/bulk",
   accessAuth,
-  authorizeUser(["Dealer", "Admin"]),
+  authorizeUser(["Admin"]),
   productController.addMultipleProducts
 );
 
@@ -29,7 +29,7 @@ router.post(
 router.patch(
   "/:productId",
   accessAuth,
-  authorizeUser(["Dealer", "Admin"]),
+  authorizeUser(["Admin"]),
   productController.editProduct
 );
 
@@ -37,7 +37,7 @@ router.patch(
 router.patch(
   "/:productId/discount",
   accessAuth,
-  authorizeUser(["Dealer", "Admin"]),
+  authorizeUser(["Admin"]),
   productController.applyDiscount
 );
 

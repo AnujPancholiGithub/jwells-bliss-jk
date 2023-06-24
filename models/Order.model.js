@@ -22,40 +22,46 @@ const orderSchema = new mongoose.Schema(
       },
     ],
     address: {
-      addressLine: {
-        type: String,
-        required: true,
-      },
-      pincode: {
-        type: String,
-        required: true,
-      },
-      city: {
-        type: String,
-        required: true,
-      },
-      area: {
-        type: String,
-        required: true,
-      },
-      country: {
-        type: String,
-        required: true,
-      },
-      state: {
-        type: String,
-        required: true,
-      },
+      addressLine: String,
+      pincode: String,
+      city: String,
+      area: String,
+      country: String,
+      state: String,
     },
     timeCreated: {
       type: Date,
       default: Date.now,
+    },
+    state: {
+      type: String,
+      enum: ["pending", "processing", "cancelled", "accepted", "delivered"],
+      default: "pending",
+    },
+    status: {
+      type: String,
+      enum: ["pending", "processing", "cancelled", "accepted", "delivered"],
+      default: "pending",
+    },
+    total: {
+      type: Number,
+      default: 0,
     },
   },
   {
     timestamps: true,
   }
 );
+
+orderSchema.virtual("totalOrderValue").get(function () {
+  let totalValue = 0;
+
+  for (const item of this.items) {
+    totalValue += parseInt(item.product.price) * parseInt(item.quantity);
+  }
+
+  return totalValue;
+});
 
 const Order = mongoose.model("Order", orderSchema);
 

@@ -31,12 +31,13 @@ const getOrderById = async (req, res) => {
 const createOrder = async (req, res) => {
   try {
     const { userId, products, address } = req.body;
+    console.log(userId, products, address);
     const order = new Order({ userId, products, address });
     await order.save();
     res.status(201).json({ message: "Order created successfully", order });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server erro r" });
   }
 };
 

@@ -4,7 +4,11 @@ const User = require("../../models/User.model");
 // Get all orders from all users
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate("user", "name email");
+    // Populate the user, items, and products in the order
+    const orders = await Order.find()
+      .populate("user", "name email")
+      .populate("items.product", "name price");
+
     res.json(orders);
   } catch (error) {
     console.error(error);
@@ -44,8 +48,29 @@ const cancelOrder = async (req, res) => {
   }
 };
 
+// Calculate the total order value
+const calculateOrderTotal = (items) => {
+  let total = 0;
+  items.forEach((item) => {
+    total += item.quantity * item.product.price;
+  });
+  return total;
+};
+
+const calculateTotalValue = async (req, res) => {
+  const { items } = req.body;
+
+  if (!items || !Array.isArray(items)) {
+    return res.status(400).json({ error: "Invalid items provided." });
+  }
+
+  const total = calculateOrderTotal(items);
+  return res.json({ total });
+};
+
 module.exports = {
   getAllOrders,
   getNewUsers,
   cancelOrder,
+  calculateTotalValue,
 };

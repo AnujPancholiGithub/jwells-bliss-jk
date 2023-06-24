@@ -11,12 +11,20 @@ router.get("/", accessAuth, CartController.getCart);
 router.post(
   "/items",
   accessAuth,
-  authorizeUser(["Dealer", "Admin"]),
+  authorizeUser(["Customer"]),
   CartController.addItemToCart
 );
 
 // Update the quantity of an item in the shopping cart
 router.put("/items/:id", accessAuth, CartController.updateCartItemQuantity);
+
+// update the state of an order
+router.put(
+  "/orders/:id",
+  accessAuth,
+  authorizeUser(["Admin"]),
+  CartController.updateCartOrderState
+);
 
 // Remove an item from the shopping cart
 router.delete("/items/:id", accessAuth, CartController.removeCartItem);

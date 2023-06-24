@@ -9,7 +9,7 @@ router.post("/", accessAuth, processCheckout);
 
 router.get("/", ordersController.getAllOrders);
 router.get("/:id", ordersController.getOrderById);
-router.post("/", ordersController.createOrder);
+router.post("/direct", ordersController.createOrder);
 router.put("/:id", ordersController.updateOrder);
 router.delete("/:id", ordersController.cancelOrder);
 

@@ -1,5 +1,6 @@
 const Cart = require("../../models/Cart.model");
 const Order = require("../../models/Order.model");
+const Product = require("../../models/Product");
 
 const getCart = async (req, res) => {
   console.log("i am in getCart", req.user);
@@ -59,6 +60,11 @@ const addItemToCart = async (req, res) => {
       cart.items.push({ product: productId, quantity: parseInt(quantity) });
     }
 
+    const productForPrice = await Product.findById(productId).select("price");
+
+    const orderValue = await cart.calculateTotal(productForPrice);
+    cart.total = orderValue;
+    console.log("cart total called", orderValue);
     // Save the updated cart to the database
     await cart.save();
 
@@ -103,6 +109,37 @@ const updateCartItemQuantity = async (req, res) => {
   }
 };
 
+const updateCartOrderState = async (req, res) => {
+  try {
+    // Extract the item ID and quantity from the request parameters and body
+    const { orderId, statusState } = req.body;
+    if (!orderId || !statusState) {
+      return res.status(400).json({ error: "OrderId and status are required" });
+    }
+    // Retrieve the current user's shopping cart from the database
+    const user = req.user; // Assuming the user is authenticated and available in the request object
+    const order = await Order.findOne({ _id: orderId });
+    console.log("order", orderId);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Update the quantity of the item
+    order.state = statusState;
+    order.status = statusState;
+
+    // Save the updated cart to the database
+    await order.save();
+
+    res
+      .status(200)
+      .json({ message: "statusState of order updated successfully", order });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" }, error);
+  }
+};
+
 const removeCartItem = async (req, res) => {
   try {
     // Extract the item ID from the request parameters
@@ -143,6 +180,10 @@ const processCheckout = async (req, res) => {
   try {
     // Retrieve the current user's shopping cart from the database
     const user = req.user; // Assuming the user is authenticated and available in the request object
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
     const cart = await Cart.findOne({ user: user._id }).populate(
       "items.product"
     );
@@ -155,24 +196,52 @@ const processCheckout = async (req, res) => {
     // ...
 
     // Create an order based on the cart contents
+    const orderValueFromCart = cart.total;
+
+    if (orderValueFromCart === 0) {
+      return res
+        .status(404)
+        .json({ message: "Cart is empty", error: cart.items });
+    }
+    console.log("orderValueFromCart", orderValueFromCart, cart);
+
+    // Proceed to checkout with the "orderValue"
+
     const order = new Order({
       user: user._id,
       items: cart.items.map((item) => ({
         product: item.product._id,
         quantity: item.quantity,
       })),
+      total: orderValueFromCart,
     });
 
-    // Save the order to the database
+    const total = order.totalOrderValue;
+
+    // // Save the order to the database
     await order.save();
 
     // Clear the user's shopping cart
-    cart.items = [];
-    await cart.save();
 
-    res.status(201).json({ message: "Order placed successfully", order });
+    const cartShouldBeEmpty = await cart.emptyValues;
+    await cart.save();
+    if (cartShouldBeEmpty) {
+      cart.items = []; // force empty the cart
+      cart.total = 0; // force empty the cart
+      await cart.save();
+      res
+        .status(201)
+        .json({ message: "Order placed successfully", data: order });
+    } else {
+      res.status(200).json({
+        message: "Order Created But Cart is not Empty",
+        order,
+        total,
+      });
+    }
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    console.log(error);
+    res.status(501).json({ message: "Internal server error", error });
   }
 };
 
@@ -182,4 +251,5 @@ module.exports = {
   updateCartItemQuantity,
   removeCartItem,
   processCheckout,
+  updateCartOrderState,
 };
