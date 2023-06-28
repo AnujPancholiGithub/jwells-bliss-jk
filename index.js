@@ -2,6 +2,8 @@
 // const dotenv = require("dotenv");
 // dotenv.config();
 // }
+
+//
 console.log(process.env.NODE_ENV);
 const cors = require("cors");
 const express = require("express");
