@@ -9,8 +9,11 @@ const accessAuth = async (req, res, next) => {
   ) {
     try {
       token = req.headers.authorization.split(" ")[1];
+      console.log("token: ", token);
+      // return res
+      //   .status(401)
+      //   .send("Authorization Not Procces Because Of Bad Token");
       const payload = await verifyJwtToken(token);
-      console.log("verifyJwtToken : ", payload);
       const user = await User.findOne({ email: payload.email });
       if (user) {
         console.log("user in Authorization", user);
@@ -19,27 +22,52 @@ const accessAuth = async (req, res, next) => {
       } else {
         return res
           .status(401)
-          .send("Authorization Not Procces Because Of Bad Token");
+          .json({ error: "Authorization Not Procces Because Of Bad Token" });
       }
     } catch (error) {
       console.log("error: ", error);
       return res
         .status(401)
-        .send("Authorization Not Procces Because Of Bad Token");
+        .json({ error: "Authorization Not Procces Because Of Bad Token" });
     }
   } else {
     return res
       .status(401)
-      .send("Authorization Not Procces Because Of Bad Token");
+      .json({ error: "Authorization Not Procces Because Of Bad Token" });
   }
 };
 
 const authorizeUser = (roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ error: "Access denied" });
+  return async (req, res, next) => {
+    if (!req.user) {
+      try {
+        const findRole = await User.findOne({ email: req.user.email }).select(
+          "role"
+        );
+        console.log("findRole: ", findRole);
+
+        if (!roles.includes(findRole.role)) {
+          console.log("Access denied 1");
+          return res.status(403).json({ error: "Access denied" });
+        } else {
+          next();
+        }
+      } catch (error) {
+        console.log("error: ", error);
+        console.log("Access denied 2");
+        return res.status(403).json({ error: "Access denied" });
+      }
+    } else {
+      if (!roles.includes(req.user.role)) {
+        console.log("req.user.role: ", req.user.role, "roles: ", roles[0]);
+        console.log("Access denied 3");
+        return res
+          .status(403)
+          .json({ error: `Access denied because you are a ${req.user.role}` });
+      } else {
+        next();
+      }
     }
-    next();
   };
 };
 

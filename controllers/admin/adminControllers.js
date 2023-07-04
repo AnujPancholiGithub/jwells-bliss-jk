@@ -6,10 +6,30 @@ const getAllOrders = async (req, res) => {
   try {
     // Populate the user, items, and products in the order
     const orders = await Order.find()
-      .populate("user", "name email")
+      .populate("user", "name email mobile")
       .populate("items.product", "name price");
 
     res.json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Get a specific order by its ID
+const getOrderById = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const order = await Order.findById(orderId)
+      .populate("user", "-password")
+      .populate(
+        "items.product",
+        "name price description category brand material size color"
+      );
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json(order);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
@@ -70,6 +90,7 @@ const calculateTotalValue = async (req, res) => {
 
 module.exports = {
   getAllOrders,
+  getOrderById,
   getNewUsers,
   cancelOrder,
   calculateTotalValue,

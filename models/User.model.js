@@ -5,6 +5,12 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: true },
     mobile: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
+    isEmailVerified: { type: Boolean, default: false },
+    otp: {
+      type: String,
+      required: true,
+      expires: "10m", // OTP expires after 10 minutes
+    },
     password: { type: String, required: true },
     role: {
       type: String,

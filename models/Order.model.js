@@ -47,6 +47,11 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    orderId: {
+      type: String,
+      required: true,
+      default: " For OrderId refers to this order _ID",
+    },
   },
   {
     timestamps: true,

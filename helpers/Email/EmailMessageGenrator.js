@@ -1,13 +1,12 @@
-const { generateOTP } = require("../OTP.verify");
 const { EmailBody } = require("./EmailMessages");
 
-const emailMessageGenerator = (to) => {
-  otp = generateOTP(6);
+const emailMessageGenerator = (to, otp, name) => {
+  console.log(to);
   const msg = {
-    to, // Change to your recipient
-    from: "anujdevs@aol.com",
+    to: to, // recipient
+    from: "Sachin@januskoncepts.in",
     subject: "Your One-Time Password (OTP) for verification",
-    text: EmailBody.otpBody(otp),
+    text: EmailBody.otpBody(otp, name),
   };
   return msg;
 };

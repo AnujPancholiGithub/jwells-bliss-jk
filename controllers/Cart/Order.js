@@ -1,5 +1,5 @@
 const Order = require("../../models/Order.model");
-
+const { v4: uuidv4 } = require("uuid");
 // Get a list of orders for the current user
 const getAllOrders = async (req, res) => {
   try {
@@ -32,7 +32,7 @@ const createOrder = async (req, res) => {
   try {
     const { userId, products, address } = req.body;
     console.log(userId, products, address);
-    const order = new Order({ userId, products, address });
+    const order = new Order({ userId, products, address, orderId: uuidv4() });
     await order.save();
     res.status(201).json({ message: "Order created successfully", order });
   } catch (error) {

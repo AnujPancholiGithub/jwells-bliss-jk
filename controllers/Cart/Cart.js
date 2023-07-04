@@ -1,7 +1,7 @@
 const Cart = require("../../models/Cart.model");
 const Order = require("../../models/Order.model");
 const Product = require("../../models/Product");
-
+const { v4: uuidv4 } = require("uuid");
 const getCart = async (req, res) => {
   console.log("i am in getCart", req.user);
   try {
@@ -178,6 +178,11 @@ const removeCartItem = async (req, res) => {
 
 const processCheckout = async (req, res) => {
   try {
+    const { address } = req.body;
+    if (!address) {
+      return res.status(400).json({ error: "Address is required" });
+    }
+
     // Retrieve the current user's shopping cart from the database
     const user = req.user; // Assuming the user is authenticated and available in the request object
     if (!user) {
@@ -214,6 +219,8 @@ const processCheckout = async (req, res) => {
         quantity: item.quantity,
       })),
       total: orderValueFromCart,
+      orderId: uuidv4(),
+      address,
     });
 
     const total = order.totalOrderValue;
