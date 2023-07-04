@@ -1,7 +1,6 @@
 // if (process.env.NODE_ENV === "dev") {
-// const dotenv = require("dotenv");
-// dotenv.config();
-// }
+const dotenv = require("dotenv");
+dotenv.config();
 
 //
 console.log(process.env.NODE_ENV);

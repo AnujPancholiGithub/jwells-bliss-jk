@@ -1,12 +1,22 @@
 const mongoose = require("mongoose");
 
+const categorySchema = new mongoose.Schema({
+  name: { type: String, required: true },
+});
+
+const Category = mongoose.model("Category", categorySchema);
+
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   mrp: { type: Number, required: true },
   price: { type: Number, required: true },
   images: [String],
-  category: { type: String, required: true },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
   brand: String,
   material: String,
   size: String,
@@ -22,4 +32,4 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", productSchema);
 
-module.exports = Product;
+module.exports = { Product, Category };

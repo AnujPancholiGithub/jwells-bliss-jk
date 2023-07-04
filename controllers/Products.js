@@ -1,11 +1,20 @@
-const Product = require("../models/Product");
+const { Product, Category } = require("../models/Product");
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().populate("category", "name");
     res.json(products);
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error, message: error.message });
+  }
+};
+
+const getAllCategories = async (req, res) => {
+  try {
+    const categories = await Category.find();
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ error: error, message: error.message });
   }
 };
 
@@ -42,12 +51,23 @@ const addProduct = async (req, res) => {
       reviews,
       mrp,
     } = req.body;
+    const categoryName = category; // Replace with the actual category name
+
+    // Find the category by its name
+    let categoryInDb = await Category.findOne({ name: categoryName });
+
+    // If the category doesn't exist, create a new one- ()
+    if (!categoryInDb) {
+      categoryInDb = new Category({ name: categoryName });
+      await categoryInDb.save();
+    }
+
     const product = new Product({
       name,
       description,
       price,
       images,
-      category,
+      category: categoryInDb._id,
       brand,
       material,
       size,
@@ -147,6 +167,7 @@ const applyDiscount = async (req, res) => {
 
 module.exports = {
   getAllProducts,
+  getAllCategories,
   getProductById,
   addProduct,
   editProduct,

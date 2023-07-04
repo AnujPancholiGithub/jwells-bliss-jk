@@ -6,6 +6,9 @@ const router = express.Router();
 // Fetch all products
 router.get("/", productController.getAllProducts);
 
+//ferch all category
+router.get("/categories", productController.getAllCategories);
+
 //Fetch one product by Id
 
 router.get("/:productId", productController.getProductById);

@@ -211,9 +211,9 @@ const adminLogin = async (req, res) => {
         .status(401)
         .json({ message: "Invalid mobile or password or not a user" });
     }
-    if (!isEmailVerified) {
-      return res.status(401).json({ message: "Email not verified" });
-    }
+    // if (!isEmailVerified) {
+    //   return res.status(401).json({ message: "Email not verified" });
+    // }
     if (user.role !== "Admin") {
       return res.status(401).json({ message: "You are not an admin" });
     }
