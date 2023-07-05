@@ -1,7 +1,8 @@
 const Cart = require("../../models/Cart.model");
 const Order = require("../../models/Order.model");
-const Product = require("../../models/Product");
+
 const { v4: uuidv4 } = require("uuid");
+const { Product } = require("../../models/Product");
 const getCart = async (req, res) => {
   console.log("i am in getCart", req.user);
   try {
@@ -70,7 +71,7 @@ const addItemToCart = async (req, res) => {
 
     res.status(201).json({ message: "Item added to cart successfully", cart });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error, message: error.message });
   }
 };
 
