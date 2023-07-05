@@ -67,6 +67,10 @@ const addItemToCart = async (req, res) => {
     cart.total = orderValue;
     console.log("cart total called", orderValue);
     // Save the updated cart to the database
+
+    cart.total = 0;
+    cart.items = [];
+
     await cart.save();
 
     res.status(201).json({ message: "Item added to cart successfully", cart });
