@@ -56,15 +56,15 @@ const registerUser = asyncHandler(async (req, res) => {
 
     //creating message
 
-    async function sendOTPEmail(email, otp) {
-      const msg2 = emailMessageGenerator(email, otp, name);
-      sgMail
-        .send(msg2)
-        .then(() => console.log("OTP email sent", otp, "to:", email))
-        .catch((error) => console.error("Error sending OTP email:", error));
-    }
+    // async function sendOTPEmail(email, otp) {
+    //   const msg2 = emailMessageGenerator(email, otp, name);
+    //   sgMail
+    //     .send(msg2)
+    //     .then(() => console.log("OTP email sent", otp, "to:", email))
+    //     .catch((error) => console.error("Error sending OTP email:", error));
+    // }
 
-    sendOTPEmail(email, otp); // Send OTP to the user's email address
+    // sendOTPEmail(email, otp); // Send OTP to the user's email address
 
     //-----------> Send in blue [brevo] otp mail sending
 

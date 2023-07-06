@@ -165,6 +165,23 @@ const applyDiscount = async (req, res) => {
   }
 };
 
+const deleteProduct = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    console.log("Deleted productId", productId, req.body);
+
+    const product = await Product.findByIdAndDelete(productId);
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.json({ message: "Product deleted successfully", product });
+  } catch (error) {
+    res.status(500).json({ error: error, message: error.message });
+  }
+};
+
 module.exports = {
   getAllProducts,
   getAllCategories,
@@ -173,4 +190,5 @@ module.exports = {
   editProduct,
   applyDiscount,
   addMultipleProducts,
+  deleteProduct,
 };

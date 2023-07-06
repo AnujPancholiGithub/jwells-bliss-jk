@@ -44,4 +44,7 @@ router.patch(
   productController.applyDiscount
 );
 
+//Apply delete a product (accessible to Dealer and Admin)
+router.delete("/delete", productController.deleteProduct);
+
 module.exports = router;

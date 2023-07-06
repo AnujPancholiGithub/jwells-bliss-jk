@@ -8,7 +8,7 @@ const Category = mongoose.model("Category", categorySchema);
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String },
   mrp: { type: Number, required: true },
   price: { type: Number, required: true },
   images: [String],
