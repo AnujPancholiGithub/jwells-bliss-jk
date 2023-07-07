@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     role: {
       type: String,
-      enum: ["Dealer", "Customer", "Admin"],
+      enum: ["Dealer", "Customer", "Admin", "Salesperson"],
       required: true,
     },
     userDetails: { type: mongoose.Schema.Types.ObjectId, ref: "UserDetails" },

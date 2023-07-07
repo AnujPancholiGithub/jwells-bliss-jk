@@ -10,8 +10,11 @@ const userDetailsSchema = Joi.object({
   state: Joi.string().allow(""),
   locality: Joi.string().allow(""),
   gstNo: Joi.string().allow(""),
-  storePersonName: Joi.string().allow(""),
-  contactNo: Joi.array().items(Joi.number().integer().min(0).max(9)).length(10),
+  storePersonName: Joi.alternatives().try(
+    Joi.string().allow(""),
+    Joi.array().items(Joi.string())
+  ),
+  contactNo: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
   gpsLocation: Joi.object({
     latitude: Joi.number(),
     longitude: Joi.number(),

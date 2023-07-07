@@ -10,7 +10,7 @@ const userDetailsSchema = new mongoose.Schema({
   locality: { type: String },
   gstNo: { type: String },
   storePersonName: { type: String },
-  contactNo: [{ type: String }],
+  contactNo: { type: String, required: true, unique: true },
   gpsLocation: {
     latitude: { type: Number },
     longitude: { type: Number },
