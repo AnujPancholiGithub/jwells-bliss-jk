@@ -18,7 +18,7 @@ console.log(process.env.SEND_GRID_API_KEY);
 
 const registerUserSchema = Joi.object({
   name: Joi.string().required(),
-  mobile: Joi.number().required(),
+  mobile: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
   role: Joi.string().required(),
@@ -29,6 +29,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const { error } = registerUserSchema.validate(req.body);
 
     if (error) {
+      console.error(error);
       return res.status(400).json({ message: error.details[0].message });
     }
     const { name, mobile, email, password, role } = req.body;
