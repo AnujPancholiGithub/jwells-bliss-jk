@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/admin/adminControllers");
 const { authorizeUser, accessAuth } = require("../middlewares/AccessAuth");
+const {
+  getAllSalespersons,
+  registerSalesperson,
+} = require("../controllers/admin/salesPersonAuth");
 
 router.get(
   "/orders",
@@ -28,6 +32,14 @@ router.post(
   accessAuth,
   authorizeUser(["Admin"]),
   adminController.calculateTotalValue
+);
+
+router.get("/all-salespersons", getAllSalespersons);
+router.post(
+  "/register-salesperson",
+  accessAuth,
+  authorizeUser(["Admin", "Dealer"]),
+  registerSalesperson
 );
 
 module.exports = router;

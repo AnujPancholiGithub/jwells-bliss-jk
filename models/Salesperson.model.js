@@ -1,3 +1,5 @@
+const { default: mongoose } = require("mongoose");
+
 const SalespersonSchema = new mongoose.Schema({
   name: {
     type: String,

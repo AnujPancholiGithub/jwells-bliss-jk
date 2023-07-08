@@ -29,4 +29,15 @@ const registerSalesperson = async (req, res) => {
   }
 };
 
-module.exports = { registerSalesperson };
+const getAllSalespersons = async (req, res) => {
+  try {
+    const salespersons = await Salesperson.find().populate("dealer", "name");
+
+    res.status(200).json({ salespersons });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+module.exports = { registerSalesperson, getAllSalespersons };
