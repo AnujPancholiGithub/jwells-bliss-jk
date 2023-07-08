@@ -5,6 +5,8 @@ const { authorizeUser, accessAuth } = require("../middlewares/AccessAuth");
 const {
   getAllSalespersons,
   registerSalesperson,
+  getSalespersonById,
+  updateSalesperson,
 } = require("../controllers/admin/salesPersonAuth");
 
 router.get(
@@ -34,6 +36,7 @@ router.post(
   adminController.calculateTotalValue
 );
 
+router.get("/salesperson/:id", getSalespersonById);
 router.get("/all-salespersons", getAllSalespersons);
 router.post(
   "/register-salesperson",
@@ -41,5 +44,8 @@ router.post(
   authorizeUser(["Admin", "Dealer"]),
   registerSalesperson
 );
+
+//updateSalesperson
+router.put("/salesperson/:id", updateSalesperson);
 
 module.exports = router;
