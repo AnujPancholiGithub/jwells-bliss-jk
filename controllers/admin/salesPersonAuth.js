@@ -2,8 +2,47 @@ const Salesperson = require("../../models/Salesperson.model");
 
 const registerSalesperson = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
+    const {
+      name,
+      email,
+      password,
+      phone,
+      alternativeNo,
+      address,
+      city,
+      state,
+      aadharCardNo,
+      aadharCardImage,
+      panCardNo,
+      panCardImage,
+    } = req.body;
+    console.log(
+      "req.body: ",
+      name,
+      email,
+      password,
+      phone,
+      address,
+      city,
+      state,
+      aadharCardNo,
+      aadharCardImage,
+      panCardNo,
+      panCardImage
+    );
+    if (
+      !name ||
+      !email ||
+      !phone ||
+      !address ||
+      !city ||
+      !state ||
+      !aadharCardNo
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Please fill all the required fields" });
+    }
     // Check if the email is already registered
     const existingUser = await Salesperson.findOne({ email });
     if (existingUser) {
@@ -14,7 +53,16 @@ const registerSalesperson = async (req, res) => {
     const salesperson = new Salesperson({
       name,
       email,
-      password,
+      password: phone,
+      phone,
+      alternativeNo,
+      address,
+      city,
+      state,
+      aadharCardNo,
+      aadharCardImage,
+      panCardNo,
+      panCardImage,
       role: "Salesperson",
       dealer: req.user._id, // Assuming the authenticated user is a dealer assigning the salesperson
     });

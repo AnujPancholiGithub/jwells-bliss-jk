@@ -10,9 +10,41 @@ const SalespersonSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true,
+  },
+  alternativeNo: {
+    type: String,
+  },
+  address: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  aadharCardNo: {
+    type: String,
+    required: true,
+  },
+  aadharCardImage: {
+    type: String,
+  },
+  panCardNo: {
+    type: String,
+  },
+  panCardImage: {
+    type: String,
   },
   role: {
     type: String,
