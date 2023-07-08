@@ -55,6 +55,10 @@ const SalespersonSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  code: {
+    type: String,
+    unique: true,
+  },
   dealer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -79,6 +83,17 @@ const SalespersonSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+// Generate the salesperson code before saving
+SalespersonSchema.pre("save", async function (next) {
+  if (!this.code) {
+    const count = await this.constructor.countDocuments();
+    const code = `JB${String(count + 1).padStart(4, "0")}`;
+    console.log("code", code);
+    this.code = code;
+  }
+  next();
 });
 
 const Salesperson = mongoose.model("Salesperson", SalespersonSchema);
