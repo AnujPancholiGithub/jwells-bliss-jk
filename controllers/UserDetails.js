@@ -101,6 +101,41 @@ const addUserDetails = async (req, res) => {
   }
 };
 
+// Controller to get all user details
+const getAllUserDetails = async (req, res) => {
+  try {
+    const userDetails = await UserDetails.find().populate(
+      "user",
+      "-password -otp"
+    );
+    // Excluding the user password field
+    res.json(userDetails);
+  } catch (error) {
+    console.error("Failed to get user details:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to get user details", message: error.message });
+  }
+};
+
+// Controller for getById
+const getUserDetailsById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id)
+      .select("-password -otp")
+      .populate("userDetails");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const updateUserDetails = async (req, res) => {
   try {
     const user = req.user;
@@ -160,4 +195,9 @@ const updateUserDetails = async (req, res) => {
   }
 };
 
-module.exports = { addUserDetails, updateUserDetails };
+module.exports = {
+  addUserDetails,
+  updateUserDetails,
+  getAllUserDetails,
+  getUserDetailsById,
+};

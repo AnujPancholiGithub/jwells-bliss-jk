@@ -59,10 +59,12 @@ const SalespersonSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
-  dealer: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
+  dealers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   productsSold: [
     {
       productId: {

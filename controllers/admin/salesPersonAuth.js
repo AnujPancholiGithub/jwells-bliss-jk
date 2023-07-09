@@ -15,6 +15,7 @@ const registerSalesperson = async (req, res) => {
       aadharCardImage,
       panCardNo,
       panCardImage,
+      dealers,
     } = req.body;
     console.log(
       "req.body: ",
@@ -28,7 +29,8 @@ const registerSalesperson = async (req, res) => {
       aadharCardNo,
       aadharCardImage,
       panCardNo,
-      panCardImage
+      panCardImage,
+      dealers
     );
     if (
       !name ||
@@ -64,7 +66,7 @@ const registerSalesperson = async (req, res) => {
       panCardNo,
       panCardImage,
       role: "Salesperson",
-      dealer: req.user._id, // Assuming the authenticated user is a dealer assigning the salesperson
+      dealers,
     });
 
     // Save the salesperson to the database
@@ -87,6 +89,7 @@ const updateSalesperson = async (req, res) => {
       alternativeNo,
       address,
       city,
+      dealer,
       state,
       aadharCardNo,
       aadharCardImage,
@@ -142,12 +145,12 @@ const updateSalesperson = async (req, res) => {
 
 const getAllSalespersons = async (req, res) => {
   try {
-    const salespersons = await Salesperson.find().populate("dealer", "name");
+    const salespersons = await Salesperson.find().populate("dealers");
 
     res.status(200).json({ salespersons });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -155,10 +158,7 @@ const getSalespersonById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const salesperson = await Salesperson.findById(id).populate(
-      "dealer",
-      "name"
-    );
+    const salesperson = await Salesperson.findById(id).populate("dealers");
 
     if (!salesperson) {
       return res.status(404).json({ error: "Salesperson not found" });
