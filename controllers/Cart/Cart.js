@@ -19,7 +19,9 @@ const getCart = async (req, res) => {
 
     res.status(200).json(cart);
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -36,7 +38,7 @@ const addItemToCart = async (req, res) => {
     ) {
       return res
         .status(400)
-        .json({ message: "Product ID and quantity are required" });
+        .json({ payload: null, message: error.message || "An error occurred" });
     }
 
     // Retrieve the current user's shopping cart from the database
@@ -110,7 +112,9 @@ const updateCartItemQuantity = async (req, res) => {
       .status(200)
       .json({ message: "Item quantity updated successfully", cart });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -141,7 +145,9 @@ const updateCartOrderState = async (req, res) => {
       .json({ message: "statusState of order updated successfully", order });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal server error" }, error);
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -177,7 +183,9 @@ const removeCartItem = async (req, res) => {
       .status(200)
       .json({ message: "Item removed from cart successfully", cart });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -253,7 +261,9 @@ const processCheckout = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(501).json({ message: "Internal server error", error });
+    res
+      .status(501)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 

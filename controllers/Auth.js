@@ -30,21 +30,28 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (error) {
       console.error(error);
-      return res.status(400).json({ message: error.details[0].message });
+      return res.status(400).json({
+        payload: null,
+        message:
+          error.details[0].message || "An error occurred during validation",
+      });
     }
+
     const { name, mobile, email, password, role } = req.body;
     const userExist = await User.findOne({ mobile });
     const emailExist = await User.findOne({ email });
 
     if (role === "Admin" || role === "admin") {
-      return res
-        .status(401)
-        .json({ message: "Admin Role is not allowed to register" });
+      return res.status(401).json({
+        payload: null,
+        message: "Admin Role is not allowed to register",
+      });
     }
 
     if (userExist || emailExist) {
       return res.status(409).json({
-        message: "déjà vu? Looks like you've already an account with us.",
+        payload: null,
+        message: "Looks like you already have an account with us.",
       });
     }
 
@@ -61,54 +68,8 @@ const registerUser = asyncHandler(async (req, res) => {
       role,
     });
 
-    //creating message
-
-    // async function sendOTPEmail(email, otp) {
-    //   const msg2 = emailMessageGenerator(email, otp, name);
-    //   sgMail
-    //     .send(msg2)
-    //     .then(() => console.log("OTP email sent", otp, "to:", email))
-    //     .catch((error) => console.error("Error sending OTP email:", error));
-    // }
-
-    // sendOTPEmail(email, otp); // Send OTP to the user's email address
-
-    //-----------> Send in blue [brevo] otp mail sending
-
-    // const sendOtpEmail = async (recipientEmail, otp) => {
-    //   const defaultClient = SibApiV3Sdk.ApiClient.instance;
-    //   defaultClient.authentications["api-key"].apiKey = sendinblueApiKey;
-
-    //   const apiInstance = new TransactionalEmailsApi();
-
-    //   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-
-    //   sendSmtpEmail.subject = "Your OTP";
-    //   sendSmtpEmail.sender = {
-    //     email: "email.email.com",
-    //     name: "Jwell Bliss",
-    //   };
-    //   sendSmtpEmail.replyTo = {
-    //     email: "email.email.com",
-    //     name: "Jwell Bliss ",
-    //   };
-    //   sendSmtpEmail.to = [{ name: "Recipient Name", email: recipientEmail }];
-    //   sendSmtpEmail.htmlContent = `<html><body><h1>This is your OTP: ${otp}</h1></body></html>`;
-
-    //   try {
-    //     const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    //     console.log("OTP email sent successfully to:", recipientEmail, otp);
-    //     console.log("response", response);
-    //   } catch (error) {
-    //     console.log("OTP email not sent ");
-    //     console.error("Error sending OTP email:", error);
-    //   }
-    // };
-
-    // // Usage example:
-    // const recipientEmail = "emal....email";
-    // await sendOtpEmail(recipientEmail, otp);
-    //---------------| end |------------------
+    // Send the OTP to the user's email address
+    // sendOTPEmail(email, otp);
 
     const payload = {
       name: newUser.name,
@@ -125,10 +86,23 @@ const registerUser = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({
-      message: "something went wrong with account creation",
+      payload: null,
+      message: error.message || "An error occurred",
     });
   }
 });
+
+// Function to send OTP email
+// async function sendOTPEmail(email, otp) {
+//   try {
+//     const msg = emailMessageGenerator(email, otp);
+//     await sgMail.send(msg);
+//     console.log("OTP email sent successfully to:", email, otp);
+//   } catch (error) {
+//     console.error("Error sending OTP email:", error);
+//     throw new Error("Failed to send OTP email");
+//   }
+// }
 
 const loginSchema = Joi.object({
   email: Joi.string().email(),
@@ -141,7 +115,11 @@ const logInUser = async (req, res) => {
     const { error } = loginSchema.validate(req.body);
 
     if (error) {
-      return res.status(400).json({ message: error.details[0].message });
+      return res.status(400).json({
+        message:
+          error.details[0].message || "An error occurred during validation",
+        payload: null,
+      });
     }
 
     const { mobile, password, email } = req.body;
@@ -183,10 +161,12 @@ const logInUser = async (req, res) => {
 
     const token = generateJwtToken(payload);
 
-    res.status(200).json({ message: "Login G", token, User: payload });
+    res
+      .status(200)
+      .json({ message: "Login G", token, User: payload, payload: payload });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "An error occurred" });
+    res.status(500).json({ message: error.message || "An error occurred" });
   }
 };
 
@@ -236,7 +216,7 @@ const adminLogin = async (req, res) => {
     res.status(200).json({ message: "Login G", token, User: payload });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "An error occurred" });
+    res.status(500).json({ message: error.message || "An error occurred" });
   }
 };
 
@@ -278,7 +258,7 @@ const verifyUserEmailUsingOtp = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "An error occurred" });
+    res.status(500).json({ message: error.message || "An error occurred" });
   }
 };
 
@@ -316,7 +296,11 @@ const resendOtp = async (req, res) => {
     await user.save();
 
     res.status(200).json({ message: "otp sent successfully" });
-  } catch (error) {}
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: error.message || "An error occurred" });
+  }
 };
 
 module.exports = {

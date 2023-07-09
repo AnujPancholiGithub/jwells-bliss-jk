@@ -12,7 +12,9 @@ const getAllOrders = async (req, res) => {
     res.json(orders);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -32,7 +34,9 @@ const getOrderById = async (req, res) => {
     res.json(order);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -49,7 +53,9 @@ const getNewUsers = async (req, res) => {
     res.json(newUsers);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -64,7 +70,9 @@ const cancelOrder = async (req, res) => {
     res.json({ message: "Order cancelled successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -81,7 +89,9 @@ const calculateTotalValue = async (req, res) => {
   const { items } = req.body;
 
   if (!items || !Array.isArray(items)) {
-    return res.status(400).json({ error: "Invalid items provided." });
+    return res
+      .status(400)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 
   const total = calculateOrderTotal(items);

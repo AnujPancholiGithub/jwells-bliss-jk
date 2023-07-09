@@ -95,7 +95,9 @@ const addUserDetails = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "An error occurred" });
+    return res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -152,7 +154,9 @@ const updateUserDetails = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "An error occurred" });
+    return res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 

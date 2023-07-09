@@ -8,7 +8,9 @@ const getAllOrders = async (req, res) => {
     res.json(orders);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -23,7 +25,9 @@ const getOrderById = async (req, res) => {
     res.json(order);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -37,7 +41,9 @@ const createOrder = async (req, res) => {
     res.status(201).json({ message: "Order created successfully", order });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server erro r" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -57,7 +63,9 @@ const updateOrder = async (req, res) => {
     res.json({ message: "Order updated successfully", order });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -72,7 +80,9 @@ const cancelOrder = async (req, res) => {
     res.json({ message: "Order cancelled successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 

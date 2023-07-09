@@ -79,7 +79,9 @@ const addProduct = async (req, res) => {
     res.status(201).json({ message: "Product added successfully", product });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Internal server error", error });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -101,7 +103,9 @@ const addMultipleProducts = async (req, res) => {
       products: createdProducts,
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -122,8 +126,9 @@ const editProduct = async (req, res) => {
     console.log("product", product);
     res.json({ message: "Product updated successfully", product });
   } catch (error) {
-    console.log("product", product);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -161,7 +166,9 @@ const applyDiscount = async (req, res) => {
     }
     res.json({ message: "Discount applied successfully", product });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
@@ -178,7 +185,9 @@ const deleteProduct = async (req, res) => {
 
     res.json({ message: "Product deleted successfully", product });
   } catch (error) {
-    res.status(500).json({ error: error, message: error.message });
+    res
+      .status(500)
+      .json({ payload: null, message: error.message || "An error occurred" });
   }
 };
 
