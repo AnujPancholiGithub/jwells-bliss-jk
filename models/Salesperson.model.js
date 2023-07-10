@@ -90,8 +90,21 @@ const SalespersonSchema = new mongoose.Schema({
 // Generate the salesperson code before saving
 SalespersonSchema.pre("save", async function (next) {
   if (!this.code) {
+    const lastSalesperson = await this.constructor.findOne(
+      {},
+      {},
+      { sort: { code: -1 } }
+    );
+
+    const lastCode = lastSalesperson ? lastSalesperson.code : "JBS0000";
+    console.log("lastCode", lastCode);
+    const lastCount = parseInt(lastCode.slice(3), 10);
+
     const count = await this.constructor.countDocuments();
-    const code = `JB${String(count + 1).padStart(4, "0")}`;
+    const code = `JBS${String(Math.max(count + 1, lastCount + 1)).padStart(
+      4,
+      "0"
+    )}`;
     console.log("code", code);
     this.code = code;
   }
