@@ -89,7 +89,7 @@ const updateSalesperson = async (req, res) => {
       alternativeNo,
       address,
       city,
-      dealer,
+      dealers,
       state,
       aadharCardNo,
       aadharCardImage,
@@ -133,6 +133,7 @@ const updateSalesperson = async (req, res) => {
     salesperson.aadharCardImage = aadharCardImage;
     salesperson.panCardNo = panCardNo;
     salesperson.panCardImage = panCardImage;
+    salesperson.dealers = dealers;
 
     await salesperson.save();
 
@@ -158,7 +159,35 @@ const getSalespersonById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const salesperson = await Salesperson.findById(id).populate("dealers");
+    //how to populate dealers and userDetails and also exclude password and otp from both
+
+    const salesperson = await Salesperson.findById(id)
+      .select("-password -otp")
+      .populate("dealers")
+      .select("-password -otp")
+      .populate({
+        path: "dealers",
+        populate: {
+          path: "userDetails",
+          select: "-password -otp",
+        },
+        select: "-password -otp",
+      });
+
+    // const salesperson = await Salesperson.findById(id)
+    //   .populate({
+    //     path: "dealers",
+    //     populate: {
+    //       path: "userDetails",
+    //       select: "-password -otp",
+    //     },
+    //   })
+    //   .select("-password -otp"); // Exclude password and otp fields from salesPerson
+
+    // .select("-password -otp")
+    // .populate("dealers")
+    // .select("-password -otp")
+    // .populate("userDetails");
 
     if (!salesperson) {
       return res.status(404).json({ error: "Salesperson not found" });
