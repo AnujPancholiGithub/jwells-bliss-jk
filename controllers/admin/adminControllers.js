@@ -44,7 +44,7 @@ const getOrderById = async (req, res) => {
 const getNewUsers = async (req, res) => {
   try {
     const newUsers = await User.find({
-      role: "Customer",
+      role: "Dealer",
     })
       .select("name email mobile createdAt")
       .sort({
