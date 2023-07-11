@@ -22,7 +22,7 @@ const getProductById = async (req, res) => {
   try {
     const { productId } = req.params;
     console.log("productId", req);
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).populate("category");
 
     if (!product) {
       return res
@@ -111,9 +111,34 @@ const addMultipleProducts = async (req, res) => {
 
 const editProduct = async (req, res) => {
   try {
-    const { name, description, price } = req.body;
+    const {
+      name,
+      description,
+      price,
+      images,
+      category,
+      brand,
+      material,
+      size,
+      color,
+      reviews,
+      mrp,
+    } = req.body;
+
     const { productId } = req.params;
-    const product = await Product.findById(productId);
+
+    const categoryName = category; // Replace with the actual category name
+
+    // Find the category by its name
+    let categoryInDb = await Category.findOne({ name: categoryName });
+
+    // If the category doesn't exist, create a new one
+    if (!categoryInDb) {
+      categoryInDb = new Category({ name: categoryName });
+      await categoryInDb.save();
+    }
+
+    const product = await Product.findById(productId).populate("category");
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
@@ -122,9 +147,22 @@ const editProduct = async (req, res) => {
     product.name = name || product.name;
     product.description = description || product.description;
     product.price = price || product.price;
+    product.images = images || product.images;
+    product.category = categoryInDb._id || product.category;
+    product.brand = brand || product.brand;
+    product.material = material || product.material;
+    product.size = size || product.size;
+    product.color = color || product.color;
+    product.reviews = reviews || product.reviews;
+    product.mrp = mrp || product.mrp;
+
     await product.save();
     console.log("product", product);
-    res.json({ message: "Product updated successfully", product });
+    res.json({
+      message: "Product updated successfully",
+      product,
+      categoryName: product.category.name,
+    });
   } catch (error) {
     res
       .status(500)

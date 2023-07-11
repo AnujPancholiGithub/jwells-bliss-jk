@@ -20,7 +20,14 @@ const productSchema = new mongoose.Schema({
   brand: String,
   material: String,
   size: String,
+  weight: String,
   color: String,
+  gemstones: [
+    {
+      name: String,
+      carat: Number,
+    },
+  ],
   reviews: [
     {
       user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
