@@ -22,7 +22,10 @@ const getProductById = async (req, res) => {
   try {
     const { productId } = req.params;
     console.log("productId", req);
-    const product = await Product.findById(productId).populate("category");
+    const product = await Product.findById(productId).populate(
+      "category",
+      "name"
+    );
 
     if (!product) {
       return res
@@ -110,24 +113,33 @@ const addMultipleProducts = async (req, res) => {
 };
 
 const editProduct = async (req, res) => {
+  const {
+    name,
+    description,
+    price,
+    images,
+    category,
+    brand,
+    material,
+    size,
+    weight,
+    color,
+    reviews,
+    mrp,
+  } = req.body;
+
+  const { productId } = req.params;
+
+  let categoryName;
   try {
-    const {
-      name,
-      description,
-      price,
-      images,
-      category,
-      brand,
-      material,
-      size,
-      color,
-      reviews,
-      mrp,
-    } = req.body;
-
-    const { productId } = req.params;
-
-    const categoryName = category; // Replace with the actual category name
+    // Replace with the actual category name
+    if (category && typeof category === "object" && category.name) {
+      categoryName = category.name.toLowerCase();
+    } else if (category && typeof category === "string") {
+      categoryName = category.toLowerCase();
+    } else {
+      categoryName = "uncategorized";
+    }
 
     // Find the category by its name
     let categoryInDb = await Category.findOne({ name: categoryName });
@@ -138,7 +150,10 @@ const editProduct = async (req, res) => {
       await categoryInDb.save();
     }
 
-    const product = await Product.findById(productId).populate("category");
+    const product = await Product.findById(productId).populate(
+      "category",
+      "name"
+    );
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
@@ -152,6 +167,7 @@ const editProduct = async (req, res) => {
     product.brand = brand || product.brand;
     product.material = material || product.material;
     product.size = size || product.size;
+    product.weight = weight || product.weight;
     product.color = color || product.color;
     product.reviews = reviews || product.reviews;
     product.mrp = mrp || product.mrp;
