@@ -245,6 +245,27 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const filterProductsByWeight = async (req, res) => {
+  try {
+    const { minWeight, maxWeight } = req.query;
+
+    let query = {};
+
+    if (minWeight && maxWeight) {
+      query = { weight: { $gte: minWeight, $lte: maxWeight } };
+    } else if (minWeight) {
+      query = { weight: { $gte: minWeight } };
+    } else if (maxWeight) {
+      query = { weight: { $lte: maxWeight } };
+    }
+
+    const products = await Product.find(query).populate("category", "name");
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllProducts,
   getAllCategories,
@@ -254,4 +275,5 @@ module.exports = {
   applyDiscount,
   addMultipleProducts,
   deleteProduct,
+  filterProductsByWeight,
 };

@@ -8,6 +8,14 @@ const {
   getSalespersonById,
   updateSalesperson,
 } = require("../controllers/admin/salesPersonAuth");
+const {
+  createGramPrice,
+  createCoinPrice,
+  getLastCoinPrice,
+  getLastGramPrice,
+  getAllGramPrices,
+  getAllCoinPrices,
+} = require("../controllers/admin/CoinManagement");
 
 router.get(
   "/orders",
@@ -47,5 +55,18 @@ router.post(
 
 //updateSalesperson
 router.put("/salesperson/:id", updateSalesperson);
+
+//add gram price
+router.post("/gram-price", createGramPrice);
+//add coin price
+router.post("/coin-price", createCoinPrice);
+//get last gram price
+router.get("/last-gram-price", getLastGramPrice);
+//get last coin price
+router.get("/last-coin-price", getLastCoinPrice);
+//get all gram prices
+router.get("/all-gram-prices", getAllGramPrices);
+//get all coin prices
+router.get("/all-coin-prices", getAllCoinPrices);
 
 module.exports = router;
