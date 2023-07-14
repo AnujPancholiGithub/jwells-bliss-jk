@@ -11,7 +11,7 @@ router.get("/", accessAuth, CartController.getCart);
 router.post(
   "/items",
   accessAuth,
-  authorizeUser(["Customer"]),
+  authorizeUser(["Customer", "Dealer"]),
   CartController.addItemToCart
 );
 
