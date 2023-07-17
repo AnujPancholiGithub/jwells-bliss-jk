@@ -192,9 +192,6 @@ const removeCartItem = async (req, res) => {
 const processCheckout = async (req, res) => {
   try {
     const { address } = req.body;
-    if (!address) {
-      return res.status(400).json({ error: "Address is required" });
-    }
 
     // Retrieve the current user's shopping cart from the database
     const user = req.user; // Assuming the user is authenticated and available in the request object
@@ -233,7 +230,14 @@ const processCheckout = async (req, res) => {
       })),
       total: orderValueFromCart,
       orderId: uuidv4(),
-      address,
+      address: address || {
+        addressLine: "addressLine",
+        pincode: "pincode",
+        city: "city",
+        area: "area",
+        country: "country",
+        state: "state",
+      },
     });
 
     const total = order.totalOrderValue;
